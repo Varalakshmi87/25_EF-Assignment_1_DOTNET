@@ -1,0 +1,70 @@
+﻿@model _20MVCEFAssignment.Models.TweetModel
+
+<div class="form-group text-left col-md-12" style="padding-left:0px;">
+    @Html.ValidationSummary(false)
+    <h4 for="exampleTextarea  text-left">What are you doing?</h4>
+</div>
+<div class="form-group text-left">
+    @Html.TextAreaFor(a => a.TweetMessage.Message, new { @class = "form-control", id = "exampleTextarea", rows = "3" })
+    <span id="message"> 140 </span> Characters Remaining
+    @Html.HiddenFor(a => a.TweetMessage.User_Id)
+    @Html.HiddenFor(a => a.TweetMessage.Tweet_Id)
+</div>
+<div class="text-right">
+    <input class="btn btn-default btn-info" type="submit" id="tweet" value="Update" />
+</div>
+<br />
+<div class="form-group">
+    <h4>Tweets</h4>
+    <table class="table">
+        @foreach (var item in Model.lstTweetMessage.OrderByDescending(a => a.Created))
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.User_Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Message)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Created)
+                </td>
+                @if (item.IsUserTweet)
+                {
+                    <td>
+                        @Html.ActionLink("Edit", "EditTweet", new { tweetId = item.Tweet_Id }) |
+                        @Html.ActionLink("Delete", "DeleteTweet", new { tweetId = item.Tweet_Id })
+                    </td>
+                }
+                else
+                {
+                    <td></td>
+                }
+
+            </tr>
+        }
+
+    </table>
+</div>
+<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript">
+           $(document).ready(function(){
+           	   $("#tweet").attr("disabled","disabled");
+               $("#exampleTextarea").keyup(function(){
+           	   	  var chars=$(this).val().length;
+
+           	   	  $("#message").text(140-chars);
+
+           	   	  if(chars > 140 || chars <=0){
+                            $("#tweet").attr("disabled","disabled");
+                            $("#message").addClass("minus");
+                            $(this).css("text-decoration","line-through");
+
+           	   	  }else{
+           	   	  	$("#tweet").removeAttr("disabled");
+           	   	  	$("#message").removeClass("minus");
+           	   	  	$(this).css("text-decoration","");
+           	   	  }
+           	   });
+           });
+</script>
